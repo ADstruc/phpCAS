@@ -312,14 +312,32 @@ class CAS_Client
     {
         // the URL is build only when needed
         if ( empty($this->_server['base_url']) ) {
-            $this->_server['base_url'] = 'https://' . $this->_getServerHostname();
-            if ($this->_getServerPort()!=443) {
-                $this->_server['base_url'] .= ':'
-                .$this->_getServerPort();
+            $protocol = 'https';
+            $port = $this->_getServerPort();
+            
+            if($port === 80 && $this->_getDofusMode()) {
+                $protocol = 'http';
             }
+            
+            $this->_server['base_url'] = $protocol . '://' . $this->_getServerHostname();
+            
+            if (($protocol === 'https' && $port !== 443) || ($protocol === 'http' && $port !== 80)) {
+                $this->_server['base_url'] .= ':' . $port;
+            }
+            
             $this->_server['base_url'] .= $this->_getServerURI();
         }
+        
         return $this->_server['base_url'];
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    private function _getDofusMode()
+    {
+        return $this->_dofus_mode;
     }
 
     /**
@@ -1872,6 +1890,13 @@ class CAS_Client
      */
     private $_no_cas_server_validation = false;
 
+    /**
+     * Set to true to communicate with the CAS server over HTTP instead of HTTPS
+     *
+     * @hideinitializer
+     */
+    private $_dofus_mode = false;
+
 
     /**
      * Set the CA certificate of the CAS server.
@@ -1902,6 +1927,16 @@ class CAS_Client
     public function setNoCasServerValidation()
     {
         $this->_no_cas_server_validation = true;
+    }
+
+    /**
+     * Set no SSL validation for the CAS server.
+     *
+     * @return void
+     */
+    public function setDofusMode()
+    {
+        $this->_dofus_mode = true;
     }
 
     /**
@@ -2722,7 +2757,7 @@ class CAS_Client
         }
 
         $request->setUrl($url);
-
+        
         if (empty($this->_cas_server_ca_cert) && !$this->_no_cas_server_validation) {
             phpCAS::error(
                 'one of the methods phpCAS::setCasServerCACert() or phpCAS::setNoCasServerValidation() must be called.'

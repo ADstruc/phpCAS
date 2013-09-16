@@ -1550,6 +1550,16 @@ class phpCAS
         self::$_PHPCAS_CLIENT->setNoCasServerValidation();
         phpCAS :: traceEnd();
     }
+    
+    public static function setDofusMode()
+    {
+        phpCAS :: traceBegin();
+        phpCAS::_validateClientExists();
+
+        phpCAS :: trace('You have configured communication with the CAS server over HTTP. This is not recommended, but probably necessary in your case.');
+        self::$_PHPCAS_CLIENT->setDofusMode();
+        phpCAS :: traceEnd();
+    }
 
 
     /**
