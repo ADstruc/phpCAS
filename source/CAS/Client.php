@@ -2221,6 +2221,19 @@ class CAS_Client
      * @hideinitializer
      */
     private $_pgt = '';
+    
+    /**
+     * This should only be used if the CAS service you are integrating with has
+     * a crazy secondary ticket exchange mechanism and you need the actual 
+     * ticket. See http://comments.gmane.org/gmane.comp.java.jasig.cas.user/23090
+     * for why this is a bad idea
+     * 
+     * @return string
+     */
+    public function badIdeaGetPGT()
+    {
+        return $this->_pgt;
+    }
 
     /**
      * This method returns the Proxy Granting Ticket given by the CAS server.

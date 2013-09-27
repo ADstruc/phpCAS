@@ -1556,13 +1556,24 @@ class phpCAS
         phpCAS :: traceBegin();
         phpCAS::_validateClientExists();
 
-        phpCAS :: trace('You have configured communication with the CAS server over HTTP. This is not recommended, but probably necessary in your case.');
+        phpCAS :: trace('You have configured communication with the CAS server over HTTP. This is a bad idea, but probably necessary in your case.');
         self::$_PHPCAS_CLIENT->setDofusMode();
         phpCAS :: traceEnd();
     }
+    
+    public static function badIdeaGetPGT()
+    {
+        phpCAS :: traceBegin();
+        phpCAS::_validateClientExists();
 
+        phpCAS :: trace('You are extracting the PGT from the CAS client. CAS has a built in proxy feature. You should not being doing this, but it is probably necessary in your case.');
+        $pgt = self::$_PHPCAS_CLIENT->badIdeaGetPGT();
+        phpCAS :: traceEnd();
+        
+        return $pgt;
+    }
 
-    /**
+        /**
      * Disable the removal of a CAS-Ticket from the URL when authenticating
      * DISABLING POSES A SECURITY RISK:
      * We normally remove the ticket by an additional redirect as a security
