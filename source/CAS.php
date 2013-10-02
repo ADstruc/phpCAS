@@ -1267,6 +1267,20 @@ class phpCAS
 
         phpCAS :: traceEnd();
     }
+    
+    public static function setServerProxyURL($url = '')
+    {
+       phpCAS :: traceBegin();
+        phpCAS::_validateClientExists();
+
+        try {
+            self::$_PHPCAS_CLIENT->setServerProxyURL($url);
+        } catch (Exception $e) {
+            phpCAS :: error(get_class($e) . ': ' . $e->getMessage());
+        }
+
+        phpCAS :: traceEnd(); 
+    }
 
     /**
      * Set the samlValidate URL of the CAS server.
@@ -1559,18 +1573,6 @@ class phpCAS
         phpCAS :: trace('You have configured communication with the CAS server over HTTP. This is a bad idea, but probably necessary in your case.');
         self::$_PHPCAS_CLIENT->setDofusMode();
         phpCAS :: traceEnd();
-    }
-    
-    public static function badIdeaGetPGT()
-    {
-        phpCAS :: traceBegin();
-        phpCAS::_validateClientExists();
-
-        phpCAS :: trace('You are extracting the PGT from the CAS client. CAS has a built in proxy feature. You should not being doing this, but it is probably necessary in your case.');
-        $pgt = self::$_PHPCAS_CLIENT->badIdeaGetPGT();
-        phpCAS :: traceEnd();
-        
-        return $pgt;
     }
 
         /**
